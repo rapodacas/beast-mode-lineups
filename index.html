@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Beast Mode 14U — Lineups</title>
+<style>
+:root{--bg:#0d141b;--panel:#16212c;--panel2:#1d2b38;--line:#2a3d4d;--ink:#eaf1f6;--mut:#8fa6b6;--gold:#f5b301;--accent:#ff5a3c;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Segoe UI",system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--ink);line-height:1.4;-webkit-text-size-adjust:100%}
+.wrap{max-width:1100px;margin:0 auto;padding:16px}
+header{text-align:center;padding:14px 0 6px}
+header h1{font-size:clamp(28px,6vw,44px);font-weight:900;letter-spacing:-1px;background:linear-gradient(90deg,var(--gold),var(--accent));-webkit-background-clip:text;background-clip:text;color:transparent;text-transform:uppercase}
+header .sub{color:var(--mut);font-size:13px;letter-spacing:2px;text-transform:uppercase;margin-top:2px}
+.weeks{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:16px 0}
+.weeks button{background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:9px;padding:8px 11px;font-size:13px;font-weight:700;cursor:pointer;transition:.15s;min-width:44px}
+.weeks button small{display:block;font-weight:500;font-size:9px;color:var(--mut);letter-spacing:.4px}
+.weeks button:hover{border-color:var(--gold)}
+.weeks button.on{background:linear-gradient(135deg,var(--gold),var(--accent));color:#1a1207;border-color:transparent}
+.weeks button.on small{color:#3a2a06}
+.meta{text-align:center;color:var(--mut);font-size:13px;margin-bottom:10px}
+.meta b{color:var(--ink)}
+.games{display:flex;gap:6px;justify-content:center;margin-bottom:14px}
+.games button{background:var(--panel);color:var(--mut);border:1px solid var(--line);border-radius:9px;padding:9px 20px;font-weight:800;font-size:14px;cursor:pointer}
+.games button.on{background:var(--panel2);color:var(--gold);border-color:var(--gold)}
+.layout{display:grid;grid-template-columns:1.15fr .85fr;gap:18px;align-items:start}
+@media(max-width:760px){.layout{grid-template-columns:1fr}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px}
+.card h3{font-size:12px;text-transform:uppercase;letter-spacing:1.5px;color:var(--mut);margin-bottom:10px}
+.field-wrap{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:8px}
+svg{width:100%;height:auto;display:block}
+.list{list-style:none;display:flex;flex-direction:column;gap:5px}
+.bat li{display:flex;align-items:center;gap:9px;background:var(--panel2);border-radius:8px;padding:7px 10px;font-size:14px}
+.bat li .num{width:20px;height:20px;border-radius:50%;background:var(--line);color:var(--ink);font-size:11px;font-weight:800;display:grid;place-items:center;flex:none}
+.bat li .nm{font-weight:700;flex:1}
+.bat li .po{color:var(--gold);font-weight:800;font-size:12px;min-width:38px;text-align:right}
+.bat li.protected{border-left:3px solid var(--gold)}
+.bat li.benchp .po{color:var(--mut)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{background:var(--panel2);border:1px solid var(--line);border-radius:20px;padding:5px 11px;font-size:13px;font-weight:600}
+.chip.off{opacity:.7;text-decoration:line-through;text-decoration-color:var(--accent)}
+.legend{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;color:var(--mut);font-size:11px;margin:10px 0 4px}
+.legend span{display:inline-flex;align-items:center;gap:5px}
+.dot{width:10px;height:10px;border-radius:50%;display:inline-block}
+.rgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.rcard{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:11px 13px}
+.rcard .rn{font-weight:800;font-size:15px}
+.rcard .rp{color:var(--gold);font-size:12px;font-weight:700;margin:2px 0 4px}
+.rcard .rnote{color:var(--mut);font-size:12px}
+footer{text-align:center;color:var(--mut);font-size:11px;margin:26px 0 10px}
+.stack{display:flex;flex-direction:column;gap:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header><h1>Beast Mode 14U</h1><div class="sub">Fall 2026 &middot; Lineups &amp; Field</div></header>
+<div class="weeks" id="weeks"></div>
+<div class="meta" id="meta"></div>
+<div class="games"><button id="gb1" class="on" onclick="setGame(1)">Game 1</button><button id="gb2" onclick="setGame(2)">Game 2</button></div>
+<div class="layout">
+  <div class="field-wrap">
+    <svg viewBox="0 0 400 400" id="field" aria-label="Softball diamond"></svg>
+    <div class="legend"><span><span class="dot" style="background:var(--accent)"></span>Pitcher</span><span><span class="dot" style="background:#3aa0ff"></span>Catcher</span><span><span class="dot" style="background:var(--gold)"></span>Protected four</span><span><span class="dot" style="background:#cfe0ec"></span>Fielder</span></div>
+  </div>
+  <div class="stack">
+    <div class="card"><h3 id="btitle">Batting order</h3><ul class="list bat" id="bat"></ul></div>
+    <div class="card"><h3>Rotating (bench &rarr; field)</h3><div class="chips" id="bench"></div></div>
+    <div class="card"><h3>Off this game</h3><div class="chips" id="off"></div></div>
+  </div>
+</div>
+<div class="card" style="margin-top:22px"><h3>Full roster &mdash; 14 players (&#11088; = protected four)</h3><div class="rgrid" id="roster"></div></div>
+<footer>Beast Mode 14U &middot; continuous batting &mdash; every dressed player hits &middot; a real SS &amp; a dedicated ace every game.</footer>
+</div>
+<script>
+const DATA={"weeks":[{"week":1,"date":"Sun, Sep 6","twins":"both games","g1":{"pitcher":"Alexis","pos":{"Alexis":"P","Kandace":"C","Carlee":"SS","Mia":"3B","Penelope":"2B","Sam":"1B","Jules":"CF","Uushla":"LF","Noshla":"RF","Elise":"Bench","Tavyn":"Bench"},"batting":["Carlee","Jules","Mia","Kandace","Sam","Uushla","Noshla","Alexis","Penelope","Elise","Tavyn"],"bench":["Elise","Tavyn"],"off":["Alannah","Dalilah","Ileiana"]},"g2":{"pitcher":"Kandace","pos":{"Kandace":"P","Jules":"C","Alannah":"SS","Mia":"3B","Penelope":"2B","Sam":"1B","Uushla":"CF","Noshla":"LF","Ileiana":"RF","Tavyn":"Bench","Dalilah":"Bench"},"batting":["Jules","Mia","Kandace","Sam","Uushla","Noshla","Ileiana","Alannah","Penelope","Tavyn","Dalilah"],"bench":["Tavyn","Dalilah"],"off":["Carlee","Alexis","Elise"]}},{"week":2,"date":"Sun, Sep 13","twins":"Game 1 only","g1":{"pitcher":"Alexis","pos":{"Alexis":"P","Elise":"C","Carlee":"SS","Penelope":"3B","Tavyn":"2B","Sam":"1B","Alannah":"CF","Uushla":"LF","Noshla":"RF","Ileiana":"Bench","Dalilah":"Bench"},"batting":["Carlee","Sam","Uushla","Noshla","Ileiana","Alexis","Alannah","Penelope","Elise","Tavyn","Dalilah"],"bench":["Ileiana","Dalilah"],"off":["Jules","Kandace","Mia"]},"g2":{"pitcher":"Kandace","pos":{"Kandace":"P","Jules":"C","Carlee":"SS","Alexis":"3B","Mia":"2B","Sam":"1B","Penelope":"CF","Tavyn":"LF","Ileiana":"RF","Elise":"Bench","Dalilah":"Bench"},"batting":["Carlee","Jules","Mia","Kandace","Sam","Ileiana","Alexis","Penelope","Elise","Tavyn","Dalilah"],"bench":["Elise","Dalilah"],"off":["Uushla","Noshla","Alannah"]}},{"week":3,"date":"Sun, Sep 20","twins":"both games","g1":{"pitcher":"Alexis","pos":{"Alexis":"P","Kandace":"C","Carlee":"SS","Mia":"3B","Elise":"2B","Jules":"1B","Alannah":"CF","Uushla":"LF","Noshla":"RF","Ileiana":"Bench","Tavyn":"Bench"},"batting":["Carlee","Jules","Mia","Kandace","Uushla","Noshla","Ileiana","Alexis","Alannah","Elise","Tavyn"],"bench":["Ileiana","Tavyn"],"off":["Sam","Penelope","Dalilah"]},"g2":{"pitcher":"Kandace","pos":{"Kandace":"P","Jules":"C","Alannah":"SS","Mia":"3B","Penelope":"2B","Sam":"1B","Uushla":"CF","Noshla":"LF","Ileiana":"RF","Elise":"Bench","Dalilah":"Bench"},"batting":["Jules","Mia","Kandace","Sam","Uushla","Noshla","Ileiana","Alannah","Penelope","Elise","Dalilah"],"bench":["Elise","Dalilah"],"off":["Carlee","Tavyn","Alexis"]}},{"week":4,"date":"Sun, Sep 27","twins":"Game 2 only","g1":{"pitcher":"Alexis","pos":{"Alexis":"P","Kandace":"C","Carlee":"SS","Mia":"3B","Penelope":"2B","Sam":"1B","Alannah":"CF","Tavyn":"LF","Ileiana":"RF","Elise":"Bench","Dalilah":"Bench"},"batting":["Carlee","Mia","Kandace","Sam","Ileiana","Alexis","Alannah","Penelope","Elise","Tavyn","Dalilah"],"bench":["Elise","Dalilah"],"off":["Uushla","Noshla","Jules"]},"g2":{"pitcher":"Kandace","pos":{"Kandace":"P","Jules":"C","Carlee":"SS","Alexis":"3B","Mia":"2B","Sam":"1B","Penelope":"CF","Uushla":"LF","Noshla":"RF","Tavyn":"Bench","Dalilah":"Bench"},"batting":["Carlee","Jules","Mia","Kandace","Sam","Uushla","Noshla","Alexis","Penelope","Tavyn","Dalilah"],"bench":["Tavyn","Dalilah"],"off":["Alannah","Elise","Ileiana"]}},{"week":5,"date":"Sun, Oct 4","twins":"both games","g1":{"pitcher":"Alexis","pos":{"Alexis":"P","Elise":"C","Carlee":"SS","Mia":"3B","Tavyn":"2B","Jules":"1B","Alannah":"CF","Uushla":"LF","Noshla":"RF","Ileiana":"Bench","Dalilah":"Bench"},"batting":["Carlee","Jules","Mia","Uushla","Noshla","Ileiana","Alexis","Alannah","Elise","Tavyn","Dalilah"],"bench":["Ileiana","Dalilah"],"off":["Sam","Kandace","Penelope"]},"g2":{"pitcher":"Kandace","pos":{"Kandace":"P","Jules":"C","Alannah":"SS","Alexis":"3B","Penelope":"2B","Sam":"1B","Uushla":"CF","Noshla":"LF","Ileiana":"RF","Elise":"Bench","Dalilah":"Bench"},"batting":["Jules","Kandace","Sam","Uushla","Noshla","Ileiana","Alexis","Alannah","Penelope","Elise","Dalilah"],"bench":["Elise","Dalilah"],"off":["Carlee","Mia","Tavyn"]}},{"week":6,"date":"Sun, Oct 11","twins":"Game 1 only","g1":{"pitcher":"Alexis","pos":{"Alexis":"P","Kandace":"C","Carlee":"SS","Mia":"3B","Penelope":"2B","Sam":"1B","Alannah":"CF","Uushla":"LF","Noshla":"RF","Elise":"Bench","Tavyn":"Bench"},"batting":["Carlee","Mia","Kandace","Sam","Uushla","Noshla","Alexis","Alannah","Penelope","Elise","Tavyn"],"bench":["Elise","Tavyn"],"off":["Jules","Dalilah","Ileiana"]},"g2":{"pitcher":"Kandace","pos":{"Kandace":"P","Jules":"C","Carlee":"SS","Alexis":"3B","Mia":"2B","Sam":"1B","Penelope":"CF","Tavyn":"LF","Ileiana":"RF","Elise":"Bench","Dalilah":"Bench"},"batting":["Carlee","Jules","Mia","Kandace","Sam","Ileiana","Alexis","Penelope","Elise","Tavyn","Dalilah"],"bench":["Elise","Dalilah"],"off":["Uushla","Noshla","Alannah"]}},{"week":7,"date":"Sun, Oct 18","twins":"both games","g1":{"pitcher":"Alexis","pos":{"Alexis":"P","Elise":"C","Carlee":"SS","Penelope":"3B","Tavyn":"2B","Jules":"1B","Alannah":"CF","Uushla":"LF","Noshla":"RF","Ileiana":"Bench","Dalilah":"Bench"},"batting":["Carlee","Jules","Uushla","Noshla","Ileiana","Alexis","Alannah","Penelope","Elise","Tavyn","Dalilah"],"bench":["Ileiana","Dalilah"],"off":["Sam","Kandace","Mia"]},"g2":{"pitcher":"Kandace","pos":{"Kandace":"P","Jules":"C","Alannah":"SS","Mia":"3B","Penelope":"2B","Sam":"1B","Uushla":"CF","Noshla":"LF","Ileiana":"RF","Tavyn":"Bench","Dalilah":"Bench"},"batting":["Jules","Mia","Kandace","Sam","Uushla","Noshla","Ileiana","Alannah","Penelope","Tavyn","Dalilah"],"bench":["Tavyn","Dalilah"],"off":["Carlee","Alexis","Elise"]}},{"week":8,"date":"Sun, Oct 25","twins":"Game 2 only","g1":{"pitcher":"Alexis","pos":{"Alexis":"P","Kandace":"C","Carlee":"SS","Mia":"3B","Penelope":"2B","Sam":"1B","Alannah":"CF","Tavyn":"LF","Ileiana":"RF","Elise":"Bench","Dalilah":"Bench"},"batting":["Carlee","Mia","Kandace","Sam","Ileiana","Alexis","Alannah","Penelope","Elise","Tavyn","Dalilah"],"bench":["Elise","Dalilah"],"off":["Uushla","Noshla","Jules"]},"g2":{"pitcher":"Kandace","pos":{"Kandace":"P","Jules":"C","Carlee":"SS","Alexis":"3B","Mia":"2B","Sam":"1B","Uushla":"CF","Noshla":"LF","Ileiana":"RF","Elise":"Bench","Dalilah":"Bench"},"batting":["Carlee","Jules","Mia","Kandace","Sam","Uushla","Noshla","Ileiana","Alexis","Elise","Dalilah"],"bench":["Elise","Dalilah"],"off":["Alannah","Penelope","Tavyn"]}},{"week":9,"date":"Sun, Nov 1","twins":"both games","g1":{"pitcher":"Alexis","pos":{"Alexis":"P","Kandace":"C","Carlee":"SS","Mia":"3B","Penelope":"2B","Jules":"1B","Alannah":"CF","Uushla":"LF","Noshla":"RF","Elise":"Bench","Tavyn":"Bench"},"batting":["Carlee","Jules","Mia","Kandace","Uushla","Noshla","Alexis","Alannah","Penelope","Elise","Tavyn"],"bench":["Elise","Tavyn"],"off":["Sam","Dalilah","Ileiana"]},"g2":{"pitcher":"Kandace","pos":{"Kandace":"P","Jules":"C","Alannah":"SS","Mia":"3B","Penelope":"2B","Sam":"1B","Uushla":"CF","Noshla":"LF","Ileiana":"RF","Tavyn":"Bench","Dalilah":"Bench"},"batting":["Jules","Mia","Kandace","Sam","Uushla","Noshla","Ileiana","Alannah","Penelope","Tavyn","Dalilah"],"bench":["Tavyn","Dalilah"],"off":["Carlee","Alexis","Elise"]}},{"week":10,"date":"Sun, Nov 8","twins":"Game 1 only","g1":{"pitcher":"Alexis","pos":{"Alexis":"P","Elise":"C","Carlee":"SS","Mia":"3B","Tavyn":"2B","Sam":"1B","Alannah":"CF","Uushla":"LF","Noshla":"RF","Ileiana":"Bench","Dalilah":"Bench"},"batting":["Carlee","Mia","Sam","Uushla","Noshla","Ileiana","Alexis","Alannah","Elise","Tavyn","Dalilah"],"bench":["Ileiana","Dalilah"],"off":["Jules","Kandace","Penelope"]},"g2":{"pitcher":"Kandace","pos":{"Kandace":"P","Jules":"C","Carlee":"SS","Alexis":"3B","Penelope":"2B","Sam":"1B","Alannah":"CF","Tavyn":"LF","Ileiana":"RF","Elise":"Bench","Dalilah":"Bench"},"batting":["Carlee","Jules","Kandace","Sam","Ileiana","Alexis","Alannah","Penelope","Elise","Tavyn","Dalilah"],"bench":["Elise","Dalilah"],"off":["Uushla","Noshla","Mia"]}},{"week":11,"date":"Sun, Nov 15","twins":"both games","g1":{"pitcher":"Alexis","pos":{"Alexis":"P","Kandace":"C","Carlee":"SS","Mia":"3B","Penelope":"2B","Jules":"1B","Alannah":"CF","Uushla":"LF","Noshla":"RF","Elise":"Bench","Tavyn":"Bench"},"batting":["Carlee","Jules","Mia","Kandace","Uushla","Noshla","Alexis","Alannah","Penelope","Elise","Tavyn"],"bench":["Elise","Tavyn"],"off":["Sam","Dalilah","Ileiana"]},"g2":{"pitcher":"Kandace","pos":{"Kandace":"P","Jules":"C","Carlee":"SS","Mia":"3B","Penelope":"2B","Sam":"1B","Alannah":"CF","Uushla":"LF","Noshla":"RF","Ileiana":"Bench","Dalilah":"Bench"},"batting":["Carlee","Jules","Mia","Kandace","Sam","Uushla","Noshla","Ileiana","Alannah","Penelope","Dalilah"],"bench":["Ileiana","Dalilah"],"off":["Tavyn","Alexis","Elise"]}}],"roster":[{"n":"Carlee","pos":"SS","note":"Most athletic; leadoff. Knee — watch load."},{"n":"Jules","pos":"C / CF / 1B","note":"Lefty; strong OF glove. Coach's daughter."},{"n":"Alexis","pos":"P / 3B","note":"Game 1 starter."},{"n":"Kandace","pos":"P / C / 3B","note":"Game 2 starter; real catcher."},{"n":"Mia","pos":"2B / 3B","note":"Power hitter."},{"n":"Sam","pos":"1B","note":"Relief P (2 IP). Reluctant pitcher."},{"n":"Alannah","pos":"SS / OF","note":"2nd shortstop; strong OF glove."},{"n":"Elise","pos":"C / 2B","note":"Developing catcher (~4 IP/wknd)."},{"n":"Uushla","pos":"OF / 1B","note":"Twin; strong hitter."},{"n":"Noshla","pos":"OF / 1B","note":"Twin; strong hitter."},{"n":"Ileiana","pos":"OF","note":"Beautiful swing; fielding developing."},{"n":"Penelope","pos":"OF / util","note":"Versatile; SS in training."},{"n":"Tavyn","pos":"OF / 2B","note":"New; weak throw → short throws."},{"n":"Dalilah","pos":"OF","note":"Primarily outfield."}]};
+const KEY=["Jules","Sam","Carlee","Alannah"];
+const POS={P:[200,250],C:[200,352],"1B":[300,232],"2B":[250,188],SS:[150,188],"3B":[100,232],LF:[104,100],CF:[200,56],RF:[296,100]};
+let wk=0, game=1;
+function field(g){
+  const f=document.getElementById("field");
+  let s='<defs><radialGradient id="gg" cx="50%" cy="28%" r="82%"><stop offset="0%" stop-color="#3aa14b"/><stop offset="100%" stop-color="#215f2a"/></radialGradient></defs>';
+  s+='<rect x="0" y="0" width="400" height="400" rx="18" fill="url(#gg)"/>';
+  s+='<path d="M40 300 A 185 185 0 0 1 360 300" fill="none" stroke="#ffffff" stroke-opacity="0.35" stroke-width="3"/>';
+  s+='<line x1="200" y1="345" x2="24" y2="298" stroke="#fff" stroke-opacity="0.45" stroke-width="2"/>';
+  s+='<line x1="200" y1="345" x2="376" y2="298" stroke="#fff" stroke-opacity="0.45" stroke-width="2"/>';
+  s+='<polygon points="200,352 312,240 200,128 88,240" fill="#c0783f"/>';
+  s+='<polygon points="200,340 292,248 200,156 108,248" fill="#2f8f3e"/>';
+  s+='<polygon points="200,345 300,245 200,145 100,245" fill="none" stroke="#f2e7d8" stroke-width="3"/>';
+  s+='<circle cx="200" cy="250" r="20" fill="#c0783f"/><rect x="196" y="246" width="8" height="8" fill="#fff"/>';
+  s+='<rect x="293" y="238" width="13" height="13" fill="#fff" transform="rotate(45 300 245)"/>';
+  s+='<rect x="193" y="138" width="13" height="13" fill="#fff" transform="rotate(45 200 145)"/>';
+  s+='<rect x="93" y="238" width="13" height="13" fill="#fff" transform="rotate(45 100 245)"/>';
+  s+='<polygon points="200,350 206,344 206,338 194,338 194,344" fill="#fff"/>';
+  for(const p in g.pos){const pos=g.pos[p];if(pos==="Bench")continue;const c=POS[pos];if(!c)continue;
+    let col="#cfe0ec",tc="#0d141b";
+    if(pos==="P"){col="#ff5a3c";tc="#fff";}else if(pos==="C"){col="#3aa0ff";tc="#fff";}else if(KEY.indexOf(p)>=0){col="#f5b301";}
+    s+='<g><circle cx="'+c[0]+'" cy="'+c[1]+'" r="15" fill="'+col+'" stroke="#0d141b" stroke-width="2"/>';
+    s+='<text x="'+c[0]+'" y="'+(c[1]+4)+'" text-anchor="middle" font-size="10" font-weight="800" fill="'+tc+'">'+pos+'</text>';
+    s+='<text x="'+c[0]+'" y="'+(c[1]-19)+'" text-anchor="middle" font-size="12" font-weight="800" fill="#fff" stroke="#0d141b" stroke-width="3" paint-order="stroke">'+p+'</text></g>';
+  }
+  f.innerHTML=s;
+}
+function render(){
+  const w=DATA.weeks[wk], g=game===1?w.g1:w.g2;
+  document.querySelectorAll("#weeks button").forEach((b,i)=>b.classList.toggle("on",i===wk));
+  document.getElementById("gb1").classList.toggle("on",game===1);
+  document.getElementById("gb2").classList.toggle("on",game===2);
+  document.getElementById("meta").innerHTML='<b>Week '+w.week+'</b> &middot; '+w.date+' &nbsp;&middot;&nbsp; twins play <b>'+w.twins+'</b> &nbsp;&middot;&nbsp; Pitching: <b>'+g.pitcher+'</b>';
+  document.getElementById("btitle").textContent="Batting order — Game "+game;
+  field(g);
+  const bat=document.getElementById("bat");bat.innerHTML='';
+  g.batting.forEach((p,i)=>{const pos=g.pos[p];const li=document.createElement("li");
+    let cls="";if(KEY.indexOf(p)>=0)cls="protected";if(pos==="Bench")cls+=" benchp";li.className=cls;
+    li.innerHTML='<span class="num">'+(i+1)+'</span><span class="nm">'+p+'</span><span class="po">'+(pos==="Bench"?"bench":pos)+'</span>';bat.appendChild(li);});
+  document.getElementById("bench").innerHTML=g.bench.length?g.bench.map(p=>'<span class="chip">'+p+'</span>').join(''):'<span style="color:var(--mut);font-size:13px">— full 11 in the field —</span>';
+  document.getElementById("off").innerHTML=g.off.map(p=>'<span class="chip off">'+p+'</span>').join('');
+}
+function setGame(n){game=n;render();}
+function setWk(i){wk=i;render();}
+(function(){
+  const wb=document.getElementById("weeks");
+  DATA.weeks.forEach((w,i)=>{const b=document.createElement("button");b.innerHTML='Wk '+w.week+'<small>'+w.date.replace(/^[A-Za-z]+, /,'')+'</small>';b.onclick=function(){setWk(i);};wb.appendChild(b);});
+  const r=document.getElementById("roster");
+  DATA.roster.forEach(function(p){const d=document.createElement("div");d.className="rcard";d.innerHTML='<div class="rn">'+p.n+(KEY.indexOf(p.n)>=0?' ⭐':'')+'</div><div class="rp">'+p.pos+'</div><div class="rnote">'+p.note+'</div>';r.appendChild(d);});
+  render();
+})();
+</script>
+</body>
+</html>
