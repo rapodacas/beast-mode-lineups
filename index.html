@@ -10,7 +10,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple
 nav{display:flex;gap:6px;overflow-x:auto;flex:1;min-width:0}
 nav button{white-space:nowrap;padding:5px 14px;border:1px solid var(--line);background:var(--card);color:var(--sub);border-radius:999px;font-size:19px;line-height:1.1;font-weight:700}
 nav button.on{background:var(--pink);color:#fff;border-color:var(--pink)}
-.wrap{padding:0 12px;max-width:560px;margin:0 auto}
+.wrap{padding:0 12px;max-width:560px;margin:0 auto;min-height:calc(100dvh - 84px);display:flex;flex-direction:column;justify-content:flex-end}
 .frow{display:block}
 @media(min-width:720px){.wrap{max-width:920px}.frow{display:grid;grid-template-columns:1.05fr .95fr;gap:20px;align-items:start}.frow .grp:first-child{margin-top:0}}
 .badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--green);margin:2px 0 8px}
@@ -29,7 +29,7 @@ nav button.on{background:var(--pink);color:#fff;border-color:var(--pink)}
 .dots{display:flex;gap:10px;justify-content:center;margin:9px 0 2px}
 .dot{width:12px;height:12px;border-radius:50%;background:var(--line);border:none;padding:0}
 .dot.on{background:var(--orange)}
-.innlabel{position:absolute;top:1%;left:2%;font-size:clamp(28px,8.5vw,58px);font-weight:900;color:#fff;text-shadow:0 2px 6px rgba(0,0,0,.9);z-index:3;line-height:1}
+.innlbl{position:absolute;top:2%;left:3%;color:#fff;font-weight:900;white-space:nowrap;line-height:1;z-index:3;text-shadow:0 2px 5px rgba(0,0,0,.9)}
 .puck{position:absolute;transform:translate(-50%,-50%);text-align:center;width:74px;z-index:2}
 .puck .c{width:40px;height:40px;border-radius:50%;margin:0 auto;background:var(--bg2);border:2px solid #fff;color:#fff;font-weight:900;font-size:13px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,.4)}
 .puck.key .c{background:var(--orange);border-color:var(--gold);color:#1a0d00}
@@ -77,12 +77,14 @@ function batList(){const bat=g().batting;return '<ol class="bat">'+bat.map(pl=>{
 function benchRow(){return '<div class="grp">On the bench</div><div class="bench">'+g().bench[INN].map(x=>'<span class="chip">'+x+'</span>').join('')+'</div>';}
 function renderField(){const gr=g().grid[INN];
  let pucks=POSN.map(p=>{const[x,y]=COORD[p];return '<div class="puck '+(KEY.has(p)?'key':'')+'" style="left:'+x+'%;top:'+y+'%"><div class="c">'+p+'</div><div class="nm">'+gr[p]+'</div></div>';}).join('');
- const innlabel='<div class="innlabel">Inning '+(INN+1)+'</div>';
+ const innlabel='<div class="innlbl">Inning '+(INN+1)+'</div>';
  const arrows='<button class="farrow l" onclick="stepInn(-1)">\u2039</button><button class="farrow r" onclick="stepInn(1)">\u203a</button>';
  const bn=g().bench[INN];
  const bench='<div class="benchbox"><div class="bh">Bench</div><div class="bgrid">'+bn.map(x=>'<span>'+x+'</span>').join('')+'</div></div>';
  const dots='<div class="dots">'+[0,1,2,3].map(i=>'<button class="dot '+(i===INN?'on':'')+'" onclick="gotoInn('+i+')"></button>').join('')+'</div>';
- document.getElementById('field').innerHTML='<div class="frow"><div class="fcol"><div class="field">'+FIELD_SVG+pucks+innlabel+arrows+bench+'</div>'+dots+'</div><div class="bcol">'+batList()+'</div></div>';}
+ document.getElementById('field').innerHTML='<div class="frow"><div class="fcol"><div class="field">'+FIELD_SVG+pucks+innlabel+arrows+bench+'</div>'+dots+'</div><div class="bcol">'+batList()+'</div></div>';
+ const _f=document.querySelector('.field'),_l=document.querySelector('.innlbl');
+ if(_f&&_l){_l.style.fontSize='24px';_l.style.fontSize=Math.max(11,24*(_f.clientWidth*0.33)/(_l.offsetWidth||1))+'px';}}
 function stepInn(d){INN=(INN+d+4)%4;renderField();}
 function gotoInn(i){INN=i;renderField();}
 function renderInning(){const gr=g().grid[INN];
