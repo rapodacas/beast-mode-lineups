@@ -20,6 +20,12 @@ nav button.on{background:var(--pink);color:#fff;border-color:var(--pink)}
 /* diamond field */
 .field{position:relative;width:100%;padding-bottom:95%}
 .field svg{position:absolute;inset:0;width:100%;height:100%}
+.farrow{position:absolute;top:50%;transform:translateY(-50%);width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.9);color:#0a1c34;border:none;font-size:24px;font-weight:900;display:flex;align-items:center;justify-content:center;z-index:3;box-shadow:0 2px 6px rgba(0,0,0,.45)}
+.farrow.l{left:4px}.farrow.r{right:4px}
+.dots{display:flex;gap:10px;justify-content:center;margin:9px 0 2px}
+.dot{width:12px;height:12px;border-radius:50%;background:var(--line);border:none;padding:0}
+.dot.on{background:var(--orange)}
+.inncap{text-align:center;font-size:12px;color:var(--sub);margin:0 0 6px}
 .puck{position:absolute;transform:translate(-50%,-50%);text-align:center;width:74px;z-index:2}
 .puck .c{width:40px;height:40px;border-radius:50%;margin:0 auto;background:var(--bg2);border:2px solid #fff;color:#fff;font-weight:900;font-size:13px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,.4)}
 .puck.key .c{background:var(--orange);border-color:var(--gold);color:#1a0d00}
@@ -42,7 +48,7 @@ td.key{background:var(--goldbg);color:var(--gold);font-weight:900}
 td.b{background:var(--redbg);color:var(--red);font-weight:800}
 .scroll{overflow-x:auto}
 .hide{display:none}.note{color:var(--sub);font-size:12px;margin:10px 2px}
-</style></head><body><div class="top"><div class="gtog"><button id="bG1" onclick="setGame('G1')">Game 1</button><button id="bG2" onclick="setGame('G2')">Game 2</button></div><nav><button data-v="field" class="on" onclick="setView('field')">Field</button><button data-v="inning" onclick="setView('inning')">This Inning</button><button data-v="players" onclick="setView('players')">Players</button><button data-v="coach" onclick="setView('coach')">Coach Grid</button></nav></div><div class="wrap"><div class="badge" id="badge"></div><div id="field"></div><div id="inning" class="hide"></div><div id="players" class="hide"></div><div id="coach" class="hide"></div></div><script>
+</style></head><body><div class="top"><div class="gtog"><button id="bG1" onclick="setGame('G1')">Game 1</button><button id="bG2" onclick="setGame('G2')">Game 2</button></div><nav><button data-v="field" class="on" onclick="setView('field')">Field</button><button data-v="inning" onclick="setView('inning')">This Inning</button><button data-v="players" onclick="setView('players')">Players</button><button data-v="coach" onclick="setView('coach')">Coach Grid</button></nav></div><div class="wrap"><div id="field"></div><div id="inning" class="hide"></div><div id="players" class="hide"></div><div id="coach" class="hide"></div></div><script>
 const DATA={"team":"The Madres 14U","date":"Sun • Sept 13","games":{"G1":{"title":"Game 1 (9-13)","batting":[{"order":1,"name":"Sam","bench":0},{"order":2,"name":"Jules","bench":1},{"order":3,"name":"Dalilah","bench":2},{"order":4,"name":"Kandyce","bench":1},{"order":5,"name":"Carlee","bench":1},{"order":6,"name":"Noshla","bench":2},{"order":7,"name":"Alexis","bench":1},{"order":8,"name":"Alannah","bench":0},{"order":9,"name":"Elise","bench":2},{"order":10,"name":"Uushla","bench":2},{"order":11,"name":"Penelope","bench":1},{"order":12,"name":"Ileiana","bench":1},{"order":13,"name":"Tavyn","bench":2}],"grid":[{"P":"Alexis","C":"Elise","1B":"Sam","2B":"Penelope","3B":"Kandyce","SS":"Carlee","LF":"Alannah","CF":"Jules","RF":"Ileiana"},{"P":"Kandyce","C":"Jules","1B":"Sam","2B":"Uushla","3B":"Penelope","SS":"Alannah","LF":"Dalilah","CF":"Noshla","RF":"Tavyn"},{"P":"Alexis","C":"Elise","1B":"Sam","2B":"Tavyn","3B":"Kandyce","SS":"Carlee","LF":"Dalilah","CF":"Alannah","RF":"Ileiana"},{"P":"Alexis","C":"Jules","1B":"Sam","2B":"Penelope","3B":"Ileiana","SS":"Carlee","LF":"Noshla","CF":"Alannah","RF":"Uushla"}],"bench":[["Dalilah","Uushla","Noshla","Tavyn"],["Alexis","Carlee","Elise","Ileiana"],["Jules","Penelope","Uushla","Noshla"],["Dalilah","Elise","Kandyce","Tavyn"]]},"G2":{"title":"Game 2 (9-13)","batting":[{"order":1,"name":"Sam","bench":0},{"order":2,"name":"Elise","bench":2},{"order":3,"name":"Jules","bench":1},{"order":4,"name":"Uushla","bench":1},{"order":5,"name":"Dalilah","bench":2},{"order":6,"name":"Penelope","bench":1},{"order":7,"name":"Kandyce","bench":1},{"order":8,"name":"Ileiana","bench":2},{"order":9,"name":"Carlee","bench":1},{"order":10,"name":"Tavyn","bench":2},{"order":11,"name":"Noshla","bench":1},{"order":12,"name":"Alannah","bench":1},{"order":13,"name":"Alexis","bench":1}],"grid":[{"P":"Kandyce","C":"Elise","1B":"Sam","2B":"Tavyn","3B":"Alannah","SS":"Carlee","LF":"Penelope","CF":"Jules","RF":"Dalilah"},{"P":"Alexis","C":"Jules","1B":"Sam","2B":"Penelope","3B":"Kandyce","SS":"Alannah","LF":"Ileiana","CF":"Noshla","RF":"Uushla"},{"P":"Kandyce","C":"Elise","1B":"Sam","2B":"Uushla","3B":"Alexis","SS":"Carlee","LF":"Dalilah","CF":"Noshla","RF":"Tavyn"},{"P":"Alexis","C":"Jules","1B":"Sam","2B":"Uushla","3B":"Alannah","SS":"Carlee","LF":"Noshla","CF":"Penelope","RF":"Ileiana"}],"bench":[["Alexis","Uushla","Noshla","Ileiana"],["Carlee","Elise","Dalilah","Tavyn"],["Jules","Penelope","Alannah","Ileiana"],["Kandyce","Elise","Dalilah","Tavyn"]]}}};
 const POSN=['P','C','1B','2B','3B','SS','LF','CF','RF'];
 const KEY=new Set(['P','C','SS']);
@@ -61,12 +67,15 @@ const g=()=>DATA.games[G];
 function validity(){const b=g().bench;for(let i=1;i<b.length;i++){const prev=new Set(b[i-1]);const d=b[i].find(x=>prev.has(x));if(d)return{ok:false,msg:'back-to-back sit: '+d};}return{ok:true};}
 function renderBadge(){const v=validity(),el=document.getElementById('badge');el.style.color=v.ok?'var(--green)':'var(--red)';el.textContent=v.ok?'\u2713 rotation valid \u2014 no back-to-back sits':'\u26a0 '+v.msg;}
 function innbar(){const gr=g().grid[INN];return '<div class="innbar"><button onclick="stepInn(-1)">\u2039</button><div class="cur"><div class="n">Inning '+(INN+1)+'</div><div class="l">P: '+gr.P+' \u00b7 C: '+gr.C+'</div></div><button onclick="stepInn(1)">\u203a</button></div>';}
-function batList(){const bat=g().batting;return '<div class="grp">Batting order (all 13 hit)</div><ol class="bat">'+bat.map(pl=>'<li><span class="o">'+pl.order+'</span><span class="n">'+pl.name+'</span><span class="s">sits '+pl.bench+'</span></li>').join('')+'</ol>';}
+function batList(){const bat=g().batting;return '<ol class="bat">'+bat.map(pl=>'<li><span class="o">'+pl.order+'</span><span class="n">'+pl.name+'</span></li>').join('')+'</ol>';}
 function benchRow(){return '<div class="grp">On the bench</div><div class="bench">'+g().bench[INN].map(x=>'<span class="chip">'+x+'</span>').join('')+'</div>';}
 function renderField(){const gr=g().grid[INN];
  let pucks=POSN.map(p=>{const[x,y]=COORD[p];return '<div class="puck '+(KEY.has(p)?'key':'')+'" style="left:'+x+'%;top:'+y+'%"><div class="c">'+p+'</div><div class="nm">'+gr[p]+'</div></div>';}).join('');
- document.getElementById('field').innerHTML='<div class="frow"><div class="fcol">'+innbar()+'<div class="field">'+FIELD_SVG+pucks+'</div>'+benchRow()+'</div><div class="bcol">'+batList()+'</div></div>';}
+ const arrows='<button class="farrow l" onclick="stepInn(-1)">\u2039</button><button class="farrow r" onclick="stepInn(1)">\u203a</button>';
+ const dots='<div class="dots">'+[0,1,2,3].map(i=>'<button class="dot '+(i===INN?'on':'')+'" onclick="gotoInn('+i+')"></button>').join('')+'</div><div class="inncap">Inning '+(INN+1)+' \u2014 P: '+gr.P+' \u00b7 C: '+gr.C+'</div>';
+ document.getElementById('field').innerHTML='<div class="frow"><div class="fcol"><div class="field">'+FIELD_SVG+pucks+arrows+'</div>'+dots+benchRow()+'</div><div class="bcol">'+batList()+'</div></div>';}
 function stepInn(d){INN=(INN+d+4)%4;renderField();renderInning();}
+function gotoInn(i){INN=i;renderField();renderInning();}
 function renderInning(){const gr=g().grid[INN];
  const row=p=>'<div class="pos '+(KEY.has(p)?'key':'')+'"><span class="p">'+p+'</span><span class="who">'+gr[p]+'</span></div>';
  let h=innbar()+'<div class="grp">Infield</div>'+['P','C','1B','2B','3B','SS'].map(row).join('')+'<div class="grp">Outfield</div>'+['LF','CF','RF'].map(row).join('')+benchRow();
@@ -80,7 +89,7 @@ function renderCoach(){const grid=g().grid,bench=g().bench;
  let h='<div class="scroll"><table><tr><th>Pos</th><th>1</th><th>2</th><th>3</th><th>4</th></tr>';
  POSN.forEach(p=>{h+='<tr><td class="poscell">'+p+'</td>';for(let i=0;i<4;i++)h+='<td class="'+(KEY.has(p)?'key':'')+'">'+grid[i][p]+'</td>';h+='</tr>';});
  h+='<tr><td class="b">SIT</td>';for(let i=0;i<4;i++)h+='<td class="b" style="font-size:11px">'+bench[i].join('<br>')+'</td>';h+='</tr></table></div>';document.getElementById('coach').innerHTML=h;}
-function renderAll(){renderBadge();renderField();renderInning();renderPlayers();renderCoach();}
+function renderAll(){renderField();renderInning();renderPlayers();renderCoach();}
 function setGame(x){G=x;INN=0;document.getElementById('bG1').className=x==='G1'?'on':'';document.getElementById('bG2').className=x==='G2'?'on':'';renderAll();}
 function setView(v){['field','inning','players','coach'].forEach(id=>document.getElementById(id).className=id===v?'':'hide');document.querySelectorAll('nav button').forEach(b=>b.className=b.dataset.v===v?'on':'');}
 setGame('G1');setView('field');
