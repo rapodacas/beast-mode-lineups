@@ -1,6 +1,6 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0a1c34"><title>Madres — Lineups</title><link rel="manifest" href="./manifest.webmanifest"><link rel="icon" href="./icon-192.png"><link rel="apple-touch-icon" href="./apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Madres"><style>
 :root{--bg:#0a1c34;--bg2:#0e2444;--card:#123056;--ink:#f4ecda;--sub:#9db2cf;--line:#1f4372;--orange:#f26a21;--pink:#ec2b8a;--cream:#f3ead6;--gold:#f6b73c;--goldbg:#3a2f13;--red:#ff6b6b;--redbg:#3a1626;--green:#3ddc97;--grass:#2f7d46;--grass2:#256b3b;--dirt:#c98a4b}
-@media(prefers-color-scheme:light){:root{--bg:#eef3fb;--bg2:#fff;--card:#fff;--ink:#0a1c34;--sub:#5b6b82;--line:#d5e0f0;--goldbg:#fdf3d6}}
+html{color-scheme:dark}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;padding-bottom:44px}
 header{position:sticky;top:0;background:linear-gradient(180deg,var(--bg2),var(--bg));padding:12px 16px 8px;border-bottom:2px solid var(--orange);z-index:10}
@@ -16,6 +16,8 @@ nav{display:flex;gap:6px;padding:10px 12px;overflow-x:auto}
 nav button{white-space:nowrap;padding:8px 13px;border:1px solid var(--line);background:var(--card);color:var(--sub);border-radius:999px;font-size:13px;font-weight:700}
 nav button.on{background:var(--pink);color:#fff;border-color:var(--pink)}
 .wrap{padding:0 12px;max-width:560px;margin:0 auto}
+.frow{display:block}
+@media(min-width:720px){.wrap{max-width:920px}.frow{display:grid;grid-template-columns:1.05fr .95fr;gap:20px;align-items:start}.frow .grp:first-child{margin-top:0}}
 .badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--green);margin:2px 0 8px}
 .innbar{display:flex;align-items:center;gap:10px;margin:6px 0 10px}
 .innbar button{width:54px;height:54px;border-radius:14px;border:1px solid var(--line);background:var(--card);color:var(--ink);font-size:24px;font-weight:900}
@@ -67,7 +69,7 @@ function batList(){const bat=g().batting;return '<div class="grp">Batting order 
 function benchRow(){return '<div class="grp">On the bench</div><div class="bench">'+g().bench[INN].map(x=>'<span class="chip">'+x+'</span>').join('')+'</div>';}
 function renderField(){const gr=g().grid[INN];
  let pucks=POSN.map(p=>{const[x,y]=COORD[p];return '<div class="puck '+(KEY.has(p)?'key':'')+'" style="left:'+x+'%;top:'+y+'%"><div class="c">'+p+'</div><div class="nm">'+gr[p]+'</div></div>';}).join('');
- document.getElementById('field').innerHTML=innbar()+'<div class="field">'+FIELD_SVG+pucks+'</div>'+benchRow()+batList();}
+ document.getElementById('field').innerHTML='<div class="frow"><div class="fcol">'+innbar()+'<div class="field">'+FIELD_SVG+pucks+'</div>'+benchRow()+'</div><div class="bcol">'+batList()+'</div></div>';}
 function stepInn(d){INN=(INN+d+4)%4;renderField();renderInning();}
 function renderInning(){const gr=g().grid[INN];
  const row=p=>'<div class="pos '+(KEY.has(p)?'key':'')+'"><span class="p">'+p+'</span><span class="who">'+gr[p]+'</span></div>';
