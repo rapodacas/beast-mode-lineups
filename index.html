@@ -22,14 +22,14 @@ nav button.on{background:var(--pink);color:#fff;border-color:var(--pink)}
 .field svg{position:absolute;inset:0;width:100%;height:100%}
 .farrow{position:absolute;top:60%;transform:translateY(-50%);width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,.92);color:#0a1c34;border:none;font-size:26px;font-weight:900;display:flex;align-items:center;justify-content:center;z-index:4;box-shadow:0 2px 8px rgba(0,0,0,.5)}
 .farrow.l{left:4px}.farrow.r{right:4px}
-.bfield{position:absolute;bottom:1%;display:flex;flex-direction:column;gap:5px;z-index:3;max-width:27%}
-.bfield.l{left:1%}.bfield.r{right:1%}
-.bchip{background:var(--redbg);color:var(--red);border:1px solid var(--red);border-radius:999px;padding:4px 9px;font-weight:800;font-size:11px;white-space:nowrap;text-align:center}
+.benchbox{position:absolute;left:2%;bottom:2%;background:rgba(10,28,52,.74);border:1px solid var(--line);border-radius:9px;padding:4px 10px 5px;z-index:3}
+.benchbox .bh{text-align:center;font-size:11px;font-weight:900;letter-spacing:.06em;color:var(--sub);text-transform:uppercase;border-bottom:1px solid var(--line);padding-bottom:2px;margin-bottom:3px}
+.bgrid{display:grid;grid-template-columns:auto auto;gap:2px 14px}
+.bgrid span{color:var(--red);font-size:11px;font-weight:800}
 .dots{display:flex;gap:10px;justify-content:center;margin:9px 0 2px}
 .dot{width:12px;height:12px;border-radius:50%;background:var(--line);border:none;padding:0}
 .dot.on{background:var(--orange)}
-.inntitle{font-size:clamp(30px,6vw,44px);font-weight:900;text-align:center;color:#fff;letter-spacing:.5px;line-height:1.05;margin:2px 0 0}
-.innsub{text-align:center;color:var(--sub);font-size:13px;margin:2px 0 4px}
+.innlabel{position:absolute;top:1%;left:2%;font-size:clamp(17px,4vw,28px);font-weight:900;color:#fff;text-shadow:0 2px 5px rgba(0,0,0,.85);z-index:3;line-height:1}
 .puck{position:absolute;transform:translate(-50%,-50%);text-align:center;width:74px;z-index:2}
 .puck .c{width:40px;height:40px;border-radius:50%;margin:0 auto;background:var(--bg2);border:2px solid #fff;color:#fff;font-weight:900;font-size:13px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,.4)}
 .puck.key .c{background:var(--orange);border-color:var(--gold);color:#1a0d00}
@@ -43,7 +43,7 @@ nav button.on{background:var(--pink);color:#fff;border-color:var(--pink)}
 ol.bat{padding-left:0;list-style:none;margin:4px 0}
 ol.bat li{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:4px 10px;margin-bottom:3px;font-size:14px}
 ol.bat li .o{background:var(--orange);color:#1a0d00;width:19px;height:19px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:11px;flex:none}
-ol.bat li .n{font-weight:700;flex:1}ol.bat li .s{color:var(--sub);font-size:11px}
+ol.bat li .n{font-weight:700;flex:1}ol.bat li .num{color:var(--gold);font-weight:900;font-size:12px;min-width:22px;text-align:right}ol.bat li .ps{color:var(--sub);font-size:11px;font-weight:800;min-width:26px;text-align:right}
 table{width:100%;border-collapse:collapse;font-size:13px;margin-top:6px}
 th,td{border:1px solid var(--line);padding:7px 5px;text-align:center}
 th{background:var(--bg2);color:var(--ink)}
@@ -71,17 +71,18 @@ const g=()=>DATA.games[G];
 function validity(){const b=g().bench;for(let i=1;i<b.length;i++){const prev=new Set(b[i-1]);const d=b[i].find(x=>prev.has(x));if(d)return{ok:false,msg:'back-to-back sit: '+d};}return{ok:true};}
 function renderBadge(){const v=validity(),el=document.getElementById('badge');el.style.color=v.ok?'var(--green)':'var(--red)';el.textContent=v.ok?'\u2713 rotation valid \u2014 no back-to-back sits':'\u26a0 '+v.msg;}
 function innbar(){const gr=g().grid[INN];return '<div class="innbar"><button onclick="stepInn(-1)">\u2039</button><div class="cur"><div class="n">Inning '+(INN+1)+'</div><div class="l">P: '+gr.P+' \u00b7 C: '+gr.C+'</div></div><button onclick="stepInn(1)">\u203a</button></div>';}
-function batList(){const bat=g().batting;return '<ol class="bat">'+bat.map(pl=>'<li><span class="o">'+pl.order+'</span><span class="n">'+pl.name+'</span></li>').join('')+'</ol>';}
+const ROSTER={Sam:{last:'Mendoza',num:3},Jules:{last:'Apodaca',num:13},Dalilah:{last:'Zarate',num:19},Kandyce:{last:'Grill',num:79},Carlee:{last:'Eagleton',num:14},Noshla:{last:'Turner',num:10},Alexis:{last:'Berggren',num:24},Alannah:{last:'Arguello',num:23},Elise:{last:'Resendiz',num:17},Uushla:{last:'Turner',num:6},Penelope:{last:'Cuevas',num:12},Ileiana:{last:'Aguilar',num:11},Tavyn:{last:'Green',num:22}};
+function primaryPos(name){const grid=g().grid;const cnt={};grid.forEach(gi=>POSN.forEach(p=>{if(gi[p]===name)cnt[p]=(cnt[p]||0)+1;}));let best='',n=0;for(const p in cnt)if(cnt[p]>n){n=cnt[p];best=p;}return best||'\u2014';}
+function batList(){const bat=g().batting;return '<ol class="bat">'+bat.map(pl=>{const r=ROSTER[pl.name]||{last:'',num:''};return '<li><span class="o">'+pl.order+'</span><span class="n">'+pl.name+(r.last?' '+r.last:'')+'</span><span class="num">'+(r.num!==''?'#'+r.num:'')+'</span><span class="ps">'+primaryPos(pl.name)+'</span></li>';}).join('')+'</ol>';}
 function benchRow(){return '<div class="grp">On the bench</div><div class="bench">'+g().bench[INN].map(x=>'<span class="chip">'+x+'</span>').join('')+'</div>';}
 function renderField(){const gr=g().grid[INN];
  let pucks=POSN.map(p=>{const[x,y]=COORD[p];return '<div class="puck '+(KEY.has(p)?'key':'')+'" style="left:'+x+'%;top:'+y+'%"><div class="c">'+p+'</div><div class="nm">'+gr[p]+'</div></div>';}).join('');
- const title='<div class="inntitle">Inning '+(INN+1)+'</div>';
+ const innlabel='<div class="innlabel">Inning '+(INN+1)+'</div>';
  const arrows='<button class="farrow l" onclick="stepInn(-1)">\u2039</button><button class="farrow r" onclick="stepInn(1)">\u203a</button>';
  const bn=g().bench[INN];
- const bl='<div class="bfield l">'+bn.slice(0,2).map(x=>'<span class="bchip">'+x+'</span>').join('')+'</div>';
- const br='<div class="bfield r">'+bn.slice(2,4).map(x=>'<span class="bchip">'+x+'</span>').join('')+'</div>';
+ const bench='<div class="benchbox"><div class="bh">Bench</div><div class="bgrid">'+bn.map(x=>'<span>'+x+'</span>').join('')+'</div></div>';
  const dots='<div class="dots">'+[0,1,2,3].map(i=>'<button class="dot '+(i===INN?'on':'')+'" onclick="gotoInn('+i+')"></button>').join('')+'</div>';
- document.getElementById('field').innerHTML='<div class="frow"><div class="fcol">'+title+'<div class="field">'+FIELD_SVG+pucks+arrows+bl+br+'</div>'+dots+'</div><div class="bcol">'+batList()+'</div></div>';}
+ document.getElementById('field').innerHTML='<div class="frow"><div class="fcol"><div class="field">'+FIELD_SVG+pucks+innlabel+arrows+bench+'</div>'+dots+'</div><div class="bcol">'+batList()+'</div></div>';}
 function stepInn(d){INN=(INN+d+4)%4;renderField();}
 function gotoInn(i){INN=i;renderField();}
 function renderInning(){const gr=g().grid[INN];
