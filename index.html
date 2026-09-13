@@ -2,8 +2,8 @@
 :root{--bg:#0a1c34;--bg2:#0e2444;--card:#123056;--ink:#f4ecda;--sub:#9db2cf;--line:#1f4372;--orange:#f26a21;--pink:#ec2b8a;--cream:#f3ead6;--gold:#f6b73c;--goldbg:#3a2f13;--red:#ff6b6b;--redbg:#3a1626;--green:#3ddc97;--grass:#2f7d46;--grass2:#256b3b;--dirt:#c98a4b}
 html{color-scheme:dark}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;padding-bottom:44px}
-.top{position:sticky;top:0;background:var(--bg);border-bottom:2px solid var(--orange);z-index:10;padding:6px 10px;display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;padding:8px 0 calc(74px + env(safe-area-inset-bottom))}
+.top{position:fixed;bottom:0;left:0;right:0;background:var(--bg);border-top:2px solid var(--orange);z-index:10;padding:8px 10px calc(8px + env(safe-area-inset-bottom));display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;justify-content:center;box-shadow:0 -3px 12px rgba(0,0,0,.45)}
 .gtog{display:flex;gap:6px}
 .gtog button{padding:6px 14px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;font-size:13px;font-weight:800}
 .gtog button.on{background:var(--orange);color:#1a0d00;border-color:var(--orange)}
